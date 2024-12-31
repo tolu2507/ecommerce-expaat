@@ -12,6 +12,7 @@ const initialState: Product = {
     rate: 0,
   },
   title: '',
+  navigation: null,
 };
 const productSlice = createSlice({
   name: 'product',

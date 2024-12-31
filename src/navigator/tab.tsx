@@ -20,6 +20,7 @@ export default function Tab() {
         }}
       />
       <Tabs.Screen name="Products" component={ProductScreen} />
+      
     </Tabs.Navigator>
   );
 }

@@ -15,6 +15,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Box from '../component/box';
 import axios from 'axios';
 import {AppText} from '../constant/text';
+import {setProducts} from '../store/feature/product';
 
 export interface Product {
   category: string;
@@ -29,22 +30,36 @@ export interface Product {
 
 const renderItem = ({item}: {item: Product}) => (
   <Pressable
-    onPress={() => item.navigation.navigate('Product', {item})}
+    onPress={() => {
+      setProducts(item);
+      return item.navigation.navigate('Product', {prop: item});
+    }}
     style={styles.card}>
     <Image
       src={item.image}
       style={{width: 200, height: 200, borderRadius: 12, objectFit: 'cover'}}
     />
-    <Text>{item.title}</Text>
-    <Text>{item.price}</Text>
-    <Text>{item.rating.rate}</Text>
+    <Text style={{color: 'black', fontSize: 16}}>{item.title}</Text>
+    <Text style={{color: 'black', fontSize: 16}}>{item.price}</Text>
+    <Text style={{color: 'black', fontSize: 16}}>{item.rating.rate}</Text>
   </Pressable>
 );
 
 const HomeScreen = ({navigation}: any) => {
   //consuming fake store endpoint.
-
+  const [productstore, setProductstore] = useState<Product[]>([]);
   const [products, setProduct] = useState<Product[]>([]);
+  const [search, setSearch] = useState('');
+  const category = [
+    'small',
+    'big',
+    'x-large',
+    'medium',
+    'tight',
+    'bigger',
+    'smaller',
+  ];
+
   const getProducts = useCallback(async function getProducts() {
     try {
       let response = await axios.get('https://fakestoreapi.com/products');
@@ -55,11 +70,23 @@ const HomeScreen = ({navigation}: any) => {
         navigation: navigation,
       }));
       setProduct(res);
+      setProductstore(res);
     } catch (error) {
       console.log(error);
       setProduct([]);
     }
   }, []);
+
+  useEffect(() => {
+    if (search) {
+      let answer = productstore.filter(item =>
+        item.title.toLowerCase().includes(search.toLowerCase()),
+      );
+      setProduct(answer);
+    } else {
+      setProduct(productstore);
+    }
+  }, [search]);
 
   useEffect(() => {
     getProducts();
@@ -73,23 +100,28 @@ const HomeScreen = ({navigation}: any) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.searchbox}>
-        <TextInput placeholder={AppText.placeholder} style={styles.input} />
-        <MaterialCommunityIcons name="cart" size={24} color="black" />
+        <TextInput
+          value={search}
+          onChangeText={setSearch}
+          placeholder={AppText.placeholder}
+          style={styles.input}
+        />
+        <MaterialCommunityIcons name="cart" size={24} color="#faf7f7" />
       </View>
 
       <View style={{gap: 12}}>
-        <Text style={{color: '#000'}}>Shop by Category</Text>
+        <Text style={{color: '#f5f3f3'}}>Shop by Category</Text>
         <ScrollView
           horizontal
+          showsHorizontalScrollIndicator={false}
           style={{
             flexDirection: 'row',
             display: 'flex',
             gap: 20,
           }}>
-          <Box name="Category" />
-          <Box name="Category" />
-          <Box name="Category" />
-          <Box name="Category" />
+          {category.map(it => (
+            <Box key={it} name={it} />
+          ))}
         </ScrollView>
       </View>
 
@@ -123,14 +155,15 @@ const styles = StyleSheet.create({
     flex: 1,
     paddingHorizontal: 12,
     paddingVertical: 20,
-    backgroundColor: 'white',
+    backgroundColor: '#0f0f0f',
     gap: 20,
   },
   card: {
     paddingHorizontal: 12,
     paddingVertical: 20,
-    borderRadius: 12,
+    borderRadius: 18,
     gap: 16,
     backgroundColor: '#fefef3',
+    marginBottom: 14,
   },
 });

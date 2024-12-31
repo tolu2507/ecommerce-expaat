@@ -33,7 +33,7 @@ function App(): React.JSX.Element {
         visibility: AndroidVisibility.PUBLIC,
         badge: true,
       });
-      console.log('registeregd channel');
+      console.log('registered channel');
     }
     unsubscribe();
     return () => {

@@ -14,12 +14,13 @@ export default function Box({name}: {name: string}) {
         backgroundColor: '#fefef3 ',
         borderWidth: 1,
         borderRadius: 12,
+        marginRight: 20,borderColor:'white'
       }}>
       <Image
         src="https://images.creativefabrica.com/products/previews/2024/02/12/rY0F8vMOr/2cGJhcJ2myedarLj7hipOY8DZ1Q-desktop.jpg"
         style={{width: 70, height: 70, borderRadius: 70, borderWidth: 1}}
       />
-      <Text>{name}</Text>
+      <Text style={{color: 'white', fontSize: 16}}>{name}</Text>
     </View>
   );
 }
